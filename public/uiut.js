@@ -27,24 +27,27 @@ function ui_build(job)
             $("#turkic_acceptfirst").effect("pulsate");
         }
     });
-
 }
 
 function ui_setup(job)
 {
     var screen = $("<div id='annotatescreen'></div>").appendTo(container);
-
+//            "<td><div id='instructionsbutton' class='button'>Instructions</div><div id='instructions'>Annotate every object, even stationary and obstructed objects, for the entire video.</td>" +
+    var actionstring = null;
+    for ( var key in job.labels )
+	actionstring = job.labels[key];
     $("<table>" + 
         "<tr>" +
-            "<td><div id='instructionsbutton' class='button'>Instructions</div><div id='instructions'>Annotate the interval where the action occurs in the following video.</td>" +
+            "<td><div id='instructionsbutton' class='button'>Instructions</div><div id='instructions'>Annotate the interval where the action <strong>" + actionstring + "</strong> occurs in the following video.</td>" +
             "<td><div id='topbar'></div></td>" +
         "</tr>" +
         "<tr>" +
               "<td><div id='videoframe'></div></td>" + 
               "<td rowspan='2'><div id='sidebar'></div></td>" +
-              "</tr><tr style='height: 15px;' ></tr>" +           "<tr>" +
+          "</tr><tr style='height: 15px;' ></tr>" + 
+          "<tr>" +
               "<td><div id='bottombar'></div></td>" + 
-              "<td><div id='frameinfobar'></div></td>" +
+              "<td><div id='frameinfobar'></div></td>" + 
           "</tr>" +
           "<tr>" +
               "<td><div id='advancedoptions'></div></td>" +
@@ -52,9 +55,9 @@ function ui_setup(job)
           "</tr>" +
       "</table>").appendTo(screen).css("width", "100%");
 
-
+//    job.width = job.width + 200;
+//    job.height = job.height + 200;
     var playerwidth = Math.max(720, job.width);
-
 
     $("#videoframe").css({"width": job.width + "px",
                           "height": job.height + "px",
@@ -65,9 +68,10 @@ function ui_setup(job)
                        "width": "205px"});
 
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
+
     $("#frameinfobar").css({"padding-left": "20px", "width": "150px"});
-                $("#frameinfobar").append("<div style='float: left;'><strong>Frame: </strong></div><div id='frameinfo'></div>");
-                $("#frameinfo").css({"width": "30px", "padding-left": "10px", "float": "left"});
+    $("#frameinfobar").append("<div style='float: left;'><strong>Frame: </strong></div><div id='frameinfo'></div>");
+    $("#frameinfo").css({"width": "30px", "padding-left": "10px", "float": "left"});
 
     $("#bottombar").append("<div id='playerslider'></div>");
     $("#bottombar").append("<div class='button' id='rewindbutton'>Rewind</div> ");
@@ -226,7 +230,7 @@ function ui_setupbuttons(job, player, tracks)
     tracks.draggable(false);
 
     $("#annotateoptionsresize").button().click(function() {
-        var resizable = $(this).attr("checked") ? false : true;
+        var resizable = !$(this).attr("checked")
         tracks.resizable(resizable);
 
         if (resizable)
@@ -410,6 +414,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
             $("#playbutton").button("option", "disabled", false);
             tracks.draggable(false);
             tracks.resizable(false);
+            //tracks.resizable(ui_canresize());
             tracks.recordposition();
             objectui.enable();
         }
@@ -470,35 +475,16 @@ function ui_submit(job, tracks, objectui)
         return;
     }
 
-    var nothingooption = false;
-    for (var i in objectui.job.labels)
-    {
-        if (job.labels[i] == "nothing")
-        {
-            nothingoption = true;
-        }
-
-    }
     if ( objectui.startenabled != false || objectui.endenabled != false )
     {
-        if (nothingoption && confirm("Are you sure none of the listed actions appear in the clip?\n\nIf yes, press OK.")) 
-        {
-            objectui.startnewobject(3);
-            objectui.stopdrawing(new Position(0, 0, 0, 0), 3);
-        } 
-        else 
-        {
-            alert("Please mark both 'Start' and 'End' of the action in the video");
-            return;
-        }        
+	alert("Please mark both 'Start' and 'End' of the action in the video");
+	return;
     }
-
-
     if ( objectui.endframe - objectui.startframe < 10 )
     {
-        alert("Please select 'Start' and 'End' with a minimum separation of 10 frames");
-        return;
-    } 
+	alert("Please select 'Start' and 'End' with a minimum separation of 10 frames");
+	return;
+    }
 
     /*if (mturk_isassigned() && !mturk_isoffline())
     {
@@ -568,6 +554,7 @@ function ui_submit(job, tracks, objectui)
                 redirect();
             }, 1000);
         }
+
     }
 
     if (job.training)
@@ -611,7 +598,7 @@ function ui_submit_failedvalidation()
 
     var str = "<ul>";
     str += "<li>Make your action interval as tightly as possible.</li>";
-    str += "<li>Start of the action must always precede the End</li>";
+    str += "<li>Start of the action should always precede the End.</li>";
     str += "</ul>";
 
     h.append(str);
@@ -668,8 +655,8 @@ function ui_disable()
     if (ui_disabled++ == 0)
     {
         $("#startbutton").button("option", "disabled", true);
-        $("#playbutton").button("option", "disabled", true);
         $("#endbutton").button("option", "disabled", true);
+        $("#playbutton").button("option", "disabled", true);
         $("#rewindbutton").button("option", "disabled", true);
         $("#submitbutton").button("option", "disabled", true);
         $("#playerslider").slider("option", "disabled", true);
@@ -684,12 +671,12 @@ function ui_enable(flag)
 {
     if (--ui_disabled == 0)
     {
-        if (typeof flag == 'undefined') {
-            $("#startbutton").button("option", "disabled", false);
-            $("#endbutton").button("option", "disabled", true);
-        }
-        $("#playbutton").button("option", "disabled", false);
-        $("#rewindbutton").button("option", "disabled", false);
+	if ( typeof flag == 'undefined' ) {
+	    $("#startbutton").button("option", "disabled", false);
+	    $("#endbutton").button("option", "disabled", false);
+	}
+	$("#playbutton").button("option", "disabled", false);
+	$("#rewindbutton").button("option", "disabled", false);
         $("#submitbutton").button("option", "disabled", false);
         $("#playerslider").slider("option", "disabled", false);
 

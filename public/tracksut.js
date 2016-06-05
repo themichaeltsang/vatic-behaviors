@@ -303,7 +303,7 @@ function TrackCollection(player, job)
      */
     this.draggable = function(value)
     {
-        value = false;
+	value = false;
         for (var i in this.tracks)
         {
             this.tracks[i].draggable(value);
@@ -315,7 +315,7 @@ function TrackCollection(player, job)
      */
     this.resizable = function(value)
     {
-        value = false;
+	value = false;
         for (var i in this.tracks)
         {
             this.tracks[i].resizable(value);
@@ -457,8 +457,8 @@ function Track(player, color, position)
      */
     this.pollposition = function()
     {
-         var hidden = this.handle.is(":hidden'");        
-         this.handle.show();
+        var hidden = this.handle.is(":hidden'");
+        this.handle.show();
 
         var pos = this.handle.position();
         var width = this.handle.width();
@@ -665,8 +665,7 @@ function Track(player, color, position)
      */
     this.setlock = function(value)
     {
-        value = true;
-
+	value = true;
         this.locked = value;
 
         if (value)
@@ -711,7 +710,6 @@ function Track(player, color, position)
             this.handle.resizable({
                 handles: "n,w,s,e",
                 autoHide: true,
-                //ghost: true, /* need to fix this bug soon */
                 start: function() {
                     player.pause();
                     me.notifystartupdate();
@@ -747,6 +745,7 @@ function Track(player, color, position)
                 },
                 cancel: ".boundingboxtext"
             });
+
 
             this.handle.mouseover(function() {
                 if (!me.locked && !me.drawingnew)
@@ -818,35 +817,32 @@ function Track(player, color, position)
 
     this.draggable = function(value)
     {
-        value = false;
-
+	value = false;
         this.candrag = value;
 
         if (value && !this.locked && !this.drawingnew)
         {
-            //this.handle.draggable("option", "disabled", false);
+            this.handle.draggable("option", "disabled", false);
         }
         else
         {
-            //this.handle.draggable("option", "disabled", true);
+            this.handle.draggable("option", "disabled", true);
         }
     }
 
     this.resizable = function(value)
     {
-        value = false;
-
+	value = false;
         this.canresize = value;
 
         if (value && !this.locked &&!this.drawingnew)
         {
-            //this.handle.resizable("option", "disabled", false);
+            this.handle.resizable("option", "disabled", false);
         }
         else
         {
-            //this.handle.resizable("option", "disabled", true);
+            this.handle.resizable("option", "disabled", true);
         }
-
     }   
 
     this.visible = function(value)
@@ -1146,6 +1142,7 @@ function Position(xtl, ytl, xbr, ybr, occluded, outside)
     {
         this.ybr = this.ytl + 1;
     }
+
     this.serialize = function()
     {
         return "[" + this.xtl + "," +

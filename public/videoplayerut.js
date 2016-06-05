@@ -105,7 +105,7 @@ function VideoPlayer(handle, job)
 
         this._callback(this.onupdate);
 
-        $("#frameinfo").html(this.frame);
+	$("#frameinfo").html(this.frame);
     }
 
     /*

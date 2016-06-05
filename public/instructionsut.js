@@ -4,16 +4,15 @@ function instructions(job, h)
     h.append("<p>In this task, we ask you to annotate a video. You are to mark the 'Start' and 'End' of an action in the video. These instructions will give you tips on how to best use our tool.</p>");
     h.append("<p>Please watch the below video (and/or read the below section) for instructions:</p>");
     h.append('<iframe width="640" height="360" src="http://www.youtube.com/embed/K8wSD_s8Ucg" frameborder="0" allowfullscreen></iframe>');
+
     h.append('<p></p>');
     h.append("<img src='action.jpg' align='right' style='border:2px solid black; border-style: inset'>");
-
     h.append("<h2>Crash Course</h2>");
     var str = "<ul>";
-    str += "<li>There will be only one instance of the specified action in the video shown.</li>";  
+    str += "<li>There will be only one instance of the specified action in the video shown.</li>";
     str += "<li>Make your action interval as tight as possible.</li>";
     str += "<li>Start of the action should always precede the End.</li>";
     str += "<li>The minimum separation between Start and End frames is 10.</li>";
-
     if (job.perobject > 0)
     {
         var amount = Math.floor(job.perobject * 100);
@@ -59,8 +58,8 @@ function instructions(job, h)
 
     h.append("<h2>How We Accept Your Work</h2>");
     h.append("<p>We will hand review your work and we will only accept high quality work. Your annotations are not compared against other workers. Follow these guidelines to ensure your work is accepted:</p>");
-
-    h.append("<h3>Mark both Start and End of the action</h3>");
+    
+    h.append("<h3>Mark both Start and End of the action</h3>")
     h.append("<p>Press the <strong>Play</strong> button. The video will play.</p>");
     h.append("<p>Pause the video when you reach the frame where the action starts. Adjust the player slider to go to the exact frame in which the action starts</p>");
     h.append("<p>Now click the <strong>Start</strong> button to mark the 'Start' of the action specified in the right hand column beside the video. </p>");
@@ -71,6 +70,7 @@ function instructions(job, h)
 
     //h.append("<img src='secret.png'>");
     //h.append("<img src='everyobject.jpg'>");
+
     h.append("<strong>Ensure that Start and End are in order, and at a minimum separation of 10 frames.</strong>");
 
     h.append("<h2>Advanced Features</h2>");
